@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"text/template"
 )
 
@@ -32,6 +33,18 @@ func main() {
 		tmpl.ExecuteTemplate(w, "bienvenida.html", data)
 	})
 
+	// buscamos si el servidor nos dio un puerto especifico
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // si es local usamos 8080 por defecto
+	}
+
 	fmt.Println("Servidor iniciado en http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("Servidor iniciado en el puerto " + port)
+
+	// Ahora usamos la variable PORT
+	err := http.ListenAndServe(":"+port, nil)
+	if err != nil {
+		panic(err)
+	}
 }
